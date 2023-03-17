@@ -13,17 +13,13 @@ pizzasRouter.get('/', (req, res) => {
     res.send('Esta es la lista de pizzas ricas');
 });
 
-pizzasRouter.post('/', [upload.single('picture')], async (req, res, next) => {
+pizzasRouter.post('/', async (req, res, next) => {
     try {
-       const picturePath = req.file ? req.file.path : null;
-       const picture = imageToUri(picturePath);
-    
-       const newMovie = new Movie({...req.body, picture });
-       const createMovies = await newMovie.save();
        
-       await fs.unlinkSync(picturePath);
-       
-       return res.status(201).json(createMovies);
+       const newPizzas = new Pizzas({...req.body });
+       const createPizzas = await newPizzas.save();
+        
+       return res.status(201).json(createPizzas);
     } catch(err) {
        next(err);
     }
