@@ -12,7 +12,6 @@ const connect = require('./utils/db/connect.js');
 const pizzasRouter = require('./routes/pizzas.routes.js');
 const userRouter = require('./routes/user.routes.js');
 const ingredientsRouter = require('./routes/ingredients.routes');
-const drinksRouter = require('./routes/drinks.routes.js');
 const DB_URL = process.env.DB_URL;
 
 connect();
@@ -61,7 +60,7 @@ server.get('/', (req,res) => {
 server.use('/pizzas', pizzasRouter);
 server.use('/user', userRouter);
 server.use('/ingredients', ingredientsRouter);
-server.use('/drinks', drinksRouter);
+
 
 server.use((err, req, res, next) => {
     return res.status(err.status || 500).json(err.message || 'Unexpected error');
