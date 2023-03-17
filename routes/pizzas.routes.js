@@ -7,13 +7,13 @@ const createError = require('../utils/errors/create-error.js');
 const isAuthJWT = require('../utils/authentication/jsonwebtoken.js');
 const upload = require('../utils/middleware/file.middleware.js');
 
-const pizzasRouter = express.Router();
+const pizzasRoutes = express.Router();
 
-pizzasRouter.get('/', (req, res) => {
+pizzasRoutes.get('/', (req, res) => {
     res.send('Esta es la lista de pizzas ricas');
 });
 
-pizzasRouter.post('/', async (req, res, next) => {
+pizzasRoutes.post('/', async (req, res, next) => {
     try {
        
        const newPizzas = new Pizzas({...req.body });
@@ -25,4 +25,4 @@ pizzasRouter.post('/', async (req, res, next) => {
     }
  });
 
-module.exports = pizzasRouter;
+module.exports = pizzasRoutes;
