@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Pizzas = require('../../models/pizzas.js');
 const fs = require('fs');
 
-const DB_URL = "mongodb+srv://root:<password>@movieapi.n2e13fz.mongodb.net/?retryWrites=true&w=majority";
+const DB_URL = "mongodb+srv://root:g9Cc4yIWqO1K65KV@movieapi.n2e13fz.mongodb.net/?retryWrites=true&w=majority";
 
 mongoose.connect(DB_URL, {
     useNewUrlParser: true,
