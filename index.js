@@ -54,6 +54,10 @@ server.use(session({
 server.use(passport.initialize());
 server.use(passport.session());
 
+server.get('/', (req,res) => {
+    res.json("Bienvenido a la TRADIZIONALE!");
+});
+
 server.use('pizzas', pizzasRouter);
 server.use('user', userRouter);
 server.use('ingredients', ingredientsRouter);
