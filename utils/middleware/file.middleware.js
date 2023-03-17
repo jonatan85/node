@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         // cb(null, path.join(__dirname, '../../public/uploads'));
         // Para usar con vercel.
-        cb(null, '/tmp');
+        cb(null, '/tmp/');
     }
 }) 
 
