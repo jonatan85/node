@@ -26,7 +26,10 @@ orderRouter.get('/', async(req, res) => {
  orderRouter.post('/', async (req, res, next) => {
      try {
         
-        const newOrder = new Order({...req.body });
+        const newOrder = new Order({
+           items : req.body.items,
+           total : req.body.total 
+        });
         const createOrder = await newOrder.save();
          
         return res.status(201).json(createOrder);
