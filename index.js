@@ -11,7 +11,7 @@ const connect = require('./utils/db/connect.js');
 
 const pizzasRouter = require('./routes/pizzas.routes.js');
 const userRouter = require('./routes/user.routes.js');
-const ingredientsRouter = require('./routes/ingredients.routes');
+const ingredientsRouter = require('./routes/ingredients.routes.js');
 const orderRouter = require('./routes/order.routes.js');
 const DB_URL = process.env.DB_URL;
 
