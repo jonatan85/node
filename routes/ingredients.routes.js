@@ -1,11 +1,11 @@
 const express = require('express');
 const Ingredients = require('../models/Ingredients.js');
 const createError = require('../utils/errors/create-error.js');
+const ingredientsRouter = express.Router();
 
-const ingredientsRoutes = express.Router();
 
 
-ingredientsRoutes.get('/', async(req, res, next) => {
+ingredientsRouter.get('/', async(req, res, next) => {
     try {
         const ingredients = await Ingredients.find();
         return res.status(200).json(ingredients);
@@ -14,7 +14,7 @@ ingredientsRoutes.get('/', async(req, res, next) => {
     }
 });
 
-ingredientsRoutes.get('/:id', async (req, res, next) => {
+ingredientsRouter.get('/:id', async (req, res, next) => {
     const id = req.params.id;
     try {
         const ingredients = await Ingredients.findById(id);
@@ -28,7 +28,7 @@ ingredientsRoutes.get('/:id', async (req, res, next) => {
     }
  });
 
- ingredientsRoutes.post('/', async(req, res, next) => {
+ ingredientsRouter.post('/', async(req, res, next) => {
     try{
         const newIngredients = new Ingredients({ ...req.body});
         const createIngredients = await newIngredients.save();
@@ -38,7 +38,7 @@ ingredientsRoutes.get('/:id', async (req, res, next) => {
     }
 });
 
-ingredientsRoutes.put('/:id', async (req, res, next) => {
+ingredientsRouter.put('/:id', async (req, res, next) => {
     try {
        const id = req.params.id;
        const modifiedIngredients = new Ingredients({...req.body});
@@ -54,7 +54,7 @@ ingredientsRoutes.put('/:id', async (req, res, next) => {
     }
   });
 
-  ingredientsRoutes.delete('/:id', async (req, res, next) => {
+  ingredientsRouter.delete('/:id', async (req, res, next) => {
     try{  
        const id = req.params.id;
        await Ingredients.findByIdAndDelete(id);
@@ -66,4 +66,4 @@ ingredientsRoutes.put('/:id', async (req, res, next) => {
 
 
 
-module.exports = ingredientsRoutes;
+module.exports = ingredientsRouter;
