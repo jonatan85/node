@@ -4,33 +4,24 @@ const Order = require('../models/Order.js');
 
 const orderRouter = express.Router();
 
-orderRouter.get('/', async(req, res) => {
+orderRouter.get('/', async (req, res, next) => {
     try {
-       const order = await Order.find().populate('items.pizza');
-       return res.status(200).json(order);
-   } catch(err) {
-       next(err);
-   }
- });
-
- orderRouter.get('/:id', async (request, response, next) => {
-    try {
-        const id = request.params.id;
-        const allOrder = await Order.findOne({ id: id });
-        return response.status(200).json(allOrder);
-    } catch (error) {
-        next(error)
+      const orders = await Order.find();
+      return res.status(200).json(orders);
+    } catch (err) {
+      next(err);
     }
- });
- orderRouter.get('/orders/:id', async (req, res) => {
+  });
+
+  orderRouter.get('/:id', async (req, res, next) => {
     try {
-      const order = await Order.findById(req.params.id).populate('items.pizza');
-      if (order == null) {
-        return res.status(404).json({ message: 'Order not found' });
+      const order = await Order.findById(req.params.id);
+      if (!order) {
+        return res.status(404).send('Order not found');
       }
-      res.json(order);
-    } catch (error) {
-        next(error)
+      return res.status(200).json(order);
+    } catch (err) {
+      next(err);
     }
   });
  
@@ -42,6 +33,33 @@ orderRouter.get('/', async(req, res) => {
       });
       const createOrder = await newOrder.save();
       return res.status(201).json(createOrder);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  orderRouter.put('/:id', async (req, res, next) => {
+    try {
+      const order = await Order.findByIdAndUpdate(req.params.id, {
+        items: req.body.items.map(item => Object.assign({}, item)),
+        total: req.body.total
+      }, { new: true });
+      if (!order) {
+        return res.status(404).send('Order not found');
+      }
+      return res.status(200).json(order);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  orderRouter.delete('/:id', async (req, res, next) => {
+    try {
+      const order = await Order.findByIdAndDelete(req.params.id);
+      if (!order) {
+        return res.status(404).send('Order not found');
+      }
+      return res.status(204).send();
     } catch (err) {
       next(err);
     }
