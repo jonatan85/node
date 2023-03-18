@@ -7,14 +7,28 @@ const ingredientsRoutes = express.Router();
 
 ingredientsRoutes.get('/', async(req, res, next) => {
     try {
-        const ingredients = await Ingredients.find().populate('pizzas');
+        const ingredients = await Ingredients.find();
         return res.status(200).json(ingredients);
     } catch(err) {
         next(err);
     }
 });
 
-ingredientsRoutes.post('/', async(req, res, next) => {
+ingredientsRoutes.get('/:id', async (req, res, next) => {
+    const id = req.params.id;
+    try {
+        const ingredients = await Ingredients.findById(id);
+        if (ingredients) {
+            return res.status(200).json(ingredients);
+        } else {
+            next(createError('El ingrediente no existe.', 404));
+        }
+    } catch (err) {
+        next(err);
+    }
+ });
+
+ ingredientsRoutes.post('/', async(req, res, next) => {
     try{
         const newIngredients = new Ingredients({ ...req.body});
         const createIngredients = await newIngredients.save();
@@ -24,25 +38,32 @@ ingredientsRoutes.post('/', async(req, res, next) => {
     }
 });
 
-// Añade peliculas  a los cines.
-ingredientsRoutes.put('/add-ingredients', async (req, res, next) => {
+ingredientsRoutes.put('/:id', async (req, res, next) => {
     try {
-        const {ingredientsId, pizzasId} = req.body;
-        if(!ingredientsId) {
-            return next(createError('Se necesita un id de cine para poder añadir una peliula', 500))
-        }
-        if(!pizzasId) {
-            return next(createError('Se necesita un id de pilicula para añadirlo a el cine', 500))
-        }
-        const addIngredients = await Ingredients.findByIdAndUpdate(
-            ingredientsId,
-            {$push: {movies: pizzasId}},
-            {new: true }
-        );
-        return res.status(200).json(addIngredients);
-    } catch(err) {
-        next(err);
+       const id = req.params.id;
+       const modifiedIngredients = new Ingredients({...req.body});
+       modifiedIngredients._id = id;
+       const ingredientsUpdate = await Ingredients.findByIdAndUpdate(
+          id,
+          modifiedIngredients,
+          {new: true}
+       );
+       return res.status(200).json(ingredientsUpdate);
+    }catch (err) {
+       next(err);
     }
-});
+  });
+
+  ingredientsRoutes.delete('/:id', async (req, res, next) => {
+    try{  
+       const id = req.params.id;
+       await Ingredients.findByIdAndDelete(id);
+       return res.status(200).json('El ingrediente se ha eliminado correctamente.')
+    } catch(err) {
+       next(err);
+    }
+  });
+
+
 
 module.exports = ingredientsRoutes;

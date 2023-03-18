@@ -7,13 +7,28 @@ const createError = require('../utils/errors/create-error.js');
 const isAuthJWT = require('../utils/authentication/jsonwebtoken.js');
 const upload = require('../utils/middleware/file.middleware.js');
 
-const pizzasRoutes = express.Router();
+const pizzasRouter = express.Router();
 
-pizzasRoutes.get('/', (req, res) => {
-    res.send('Esta es la lista de pizzas ricas');
+pizzasRouter.get('/', async(req, res) => {
+   try {
+      const pizzas = await Pizzas.find().populate('ingredients');
+      return res.status(200).json(pizzas);
+  } catch(err) {
+      next(err);
+  }
 });
 
-pizzasRoutes.post('/', async (req, res, next) => {
+pizzasRouter.get('/:id', async (request, response, next) => {
+   try {
+       const id = request.params.id;
+       const allPizzas = await Pizzas.findOne({ id: id });
+       return response.status(200).json(allPizzas);
+   } catch (error) {
+       next(error)
+   }
+});
+
+pizzasRouter.post('/', async (req, res, next) => {
     try {
        
        const newPizzas = new Pizzas({...req.body });
@@ -25,4 +40,50 @@ pizzasRoutes.post('/', async (req, res, next) => {
     }
  });
 
-module.exports = pizzasRoutes;
+pizzasRouter.put('/add-ingredients', async (req, res, next) => {
+   try {
+       const {pizzasId, ingredientsId} = req.body;
+       if(!pizzasId) {
+           return next(createError('Se necesita un id de pizza para poder añadir un ingrediente', 500))
+       }
+       if(!ingredientsId) {
+           return next(createError('Se necesita un id de ingrediente para añadirlo a la pizza', 500))
+       }
+       const addPizza = await Pizzas.findByIdAndUpdate(
+           pizzasId,
+           {$push: {ingredients: ingredientsId}},
+           {new: true }
+       );
+       return res.status(200).json(addPizza);
+   } catch(err) {
+       next(err);
+   }
+});
+
+pizzasRouter.put('/:id', async (req, res, next) => {
+   try {
+      const id = req.params.id;
+      const modifiedPizzas = new Pizzas({...req.body});
+      modifiedPizzas._id = id;
+      const pizzasUpdate = await Pizzas.findByIdAndUpdate(
+         id,
+         modifiedPizzas,
+         {new: true}
+      );
+      return res.status(200).json(pizzasUpdate);
+   }catch (err) {
+      next(err);
+   }
+ });
+
+pizzasRouter.delete('/:id', async (req, res, next) => {
+   try{  
+      const id = req.params.id;
+      await Pizzas.findByIdAndDelete(id);
+      return res.status(200).json('La pizza se a eliminado correctamente.')
+   } catch(err) {
+      next(err);
+   }
+ });
+
+module.exports = pizzasRouter;
