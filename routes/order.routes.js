@@ -34,11 +34,11 @@ orderRouter.get('/', async(req, res) => {
     }
   });
  
- orderRouter.post('/', async (req, res, next) => {
+ orderRouter.post('/order', async (req, res, next) => {
      try {
         const newOrder = new Order({
-           items : req.body.items,
-           total : req.body.total 
+           ...req.body.items,
+           ...req.body.total 
         });
         const createOrder = await newOrder.save();
          
