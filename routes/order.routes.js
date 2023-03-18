@@ -34,7 +34,7 @@ orderRouter.get('/', async(req, res) => {
     }
   });
  
-  orderRouter.post('/order', async (req, res, next) => {
+  orderRouter.post('/', async (req, res, next) => {
     try {
       const newOrder = new Order({
         items: req.body.items.map(item => Object.assign({}, item)),
